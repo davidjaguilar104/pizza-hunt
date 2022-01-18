@@ -6,6 +6,13 @@ const pizzaController = {
   // get all pizzas
   getAllPizza(req, res) {
     Pizza.find({})
+    .populate({
+      path: 'comments',
+      // minus sign means we don't want that field returned
+      select: '-__v'
+    })
+    .select('-__v')
+    .sort({ _id: -1 })
       .then((dbPizzData) => res.json(dbPizzData))
       .catch((err) => {
         console.log(err);
@@ -16,6 +23,11 @@ const pizzaController = {
   // get one pizza by id
   getPizzaById({ params }, res) {
     Pizza.findOne({ _id: params.id })
+    .populate({
+      path: 'comments',
+      select: '-__v'
+    })
+    .select('-__v')
       .then((dbPizzData) => {
         // If no pizza is found, send 404
         if (!dbPizzData) {
